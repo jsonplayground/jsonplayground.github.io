@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Developer Toolkit - All-in-One JSON Tools</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --bg-tertiary: #252525;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --accent: #00ff88;
+            --accent-hover: #00cc6a;
+            --error: #ff4757;
+            --warning: #ffa502;
+            --success: #00ff88;
+            --border: #333333;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: var(--bg-secondary);
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            background: linear-gradient(135deg, var(--accent) 0%, #00ccff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tools-nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            background: var(--bg-secondary);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .tool-tab {
+            padding: 10px 20px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .tool-tab:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+        }
+
+        .tool-tab.active {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .tool-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tool-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-output-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+
+        .btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .code-editor {
+            width: 100%;
+            min-height: 400px;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .code-editor:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .error-message {
+            background: rgba(255, 71, 87, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .success-message {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .path-results {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .path-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            font-family: monospace;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .path-item:hover {
+            background: var(--bg-primary);
+            border: 1px solid var(--accent);
+        }
+
+        .tree-view {
+            font-family: monospace;
+            line-height: 1.8;
+        }
+
+        .tree-node {
+            margin-left: 20px;
+        }
+
+        .tree-key {
+            color: #ff6b6b;
+        }
+
+        .tree-string {
+            color: #feca57;
+        }
+
+        .tree-number {
+            color: #48dbfb;
+        }
+
+        .tree-boolean {
+            color: #ff9ff3;
+        }
+
+        .tree-null {
+            color: #c7ecee;
+        }
+
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .collapsible::before {
+            content: '▼ ';
+            display: inline-block;
+            transition: transform 0.3s;
+        }
+
+        .collapsible.collapsed::before {
+            transform: rotate(-90deg);
+        }
+
+        .options-panel {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-group {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .option-group label {
+            color: var(--text-secondary);
+            min-width: 120px;
+        }
+
+        .option-group input[type="number"],
+        .option-group input[type="text"],
+        .option-group select {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 8px;
+            border-radius: 4px;
+            flex: 1;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .stats-panel {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 900px) {
+            .input-output-container {
+                grid-template-columns: 1fr;
+            }
+
+            .tools-nav {
+                justify-content: center;
+            }
+
+            .option-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid var(--border);
+            border-radius: 50%;
+            border-top-color: var(--accent);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .copy-btn {
+            padding: 4px 8px;
+            font-size: 0.8em;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+        }
+
+        .copy-btn:hover {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1>JSON Developer Toolkit</h1>
+            <p>Complete suite of JSON tools for developers - Format, Validate, Search, Convert & More</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="tools-nav">
+            <button class="tool-tab active" onclick="switchTool('formatter')">Formatter</button>
+            <button class="tool-tab" onclick="switchTool('validator')">Validator</button>
+            <button class="tool-tab" onclick="switchTool('pathfinder')">Path Finder</button>
+            <button class="tool-tab" onclick="switchTool('minifier')">Minifier</button>
+            <button class="tool-tab" onclick="switchTool('tree')">Tree View</button>
+            <button class="tool-tab" onclick="switchTool('converter')">CSV Converter</button>
+            <button class="tool-tab" onclick="switchTool('compare')">Compare</button>
+            <button class="tool-tab" onclick="switchTool('generator')">Generator</button>
+        </nav>
+
+        <!-- JSON Formatter -->
+        <section id="formatter" class="tool-section active">
+            <div class="options-panel">
+                <div class="option-group">
+                    <label>Indentation:</label>
+                    <select id="indentSize">
+                        <option value="2">2 spaces</option>
+                        <option value="4">4 spaces</option>
+                        <option value="\t">Tab</option>
+                    </select>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="sortKeys">
+                        <label for="sortKeys">Sort keys</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-output-container">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Input JSON</h3>
+                        <div class="panel-actions">
+                            <button class="btn" onclick="clearInput('formatterInput')">Clear</button>
+                            <button class="btn" onclick="pasteFromClipboard('formatterInput')">Paste</button>
+                        </div>
+                    </div>
+                    <textarea id="formatterInput" class="code-editor" placeholder="Paste your JSON here..."></textarea>
+                    <div id="formatterError" class="error-message"></div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Formatted JSON</h3>
+                        <div class="panel-actions">
+                            <button class="btn" onclick="copyToClipboard('formatterOutput')">Copy</button>
+                            <button class="btn" onclick="downloadJSON('formatterOutput', 'formatted.json')">Download</button>
+                        </div>
+                    </div>
+                    <textarea id="formatterOutput" class="code-editor" readonly placeholder="Formatted JSON will appear here..."></textarea>
+                    <div id="formatterSuccess" class="success-message"></div>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="formatJSON()">Format JSON</button>
+            </div>
+        </section>
+
+        <!-- JSON Validator -->
+        <section id="validator" class="tool-section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">JSON Validator</h3>
+                    <div class="panel-actions">
+                        <button class="btn" onclick="clearInput('validatorInput')">Clear</button>
+                        <button class="btn" onclick="pasteFromClipboard('validatorInput')">Paste</button>
+                    </div>
+                </div>
+                <textarea id="validatorInput" class="code-editor" placeholder="Paste your JSON here to validate..."></textarea>
+                <div id="validationResult" style="margin-top: 20px;"></div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="validateJSON()">Validate JSON</button>
+            </div>
+            
+            <div id="validationStats" class="stats-panel" style="display: none;">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalKeys">0</div>
+                    <div class="stat-label">Total Keys</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="totalValues">0</div>
+                    <div class="stat-label">Total Values</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="nestingLevel">0</div>
+                    <div class="stat-label">Max Depth</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="dataSize">0 B</div>
+                    <div class="stat-label">Size</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Path Finder -->
+        <section id="pathfinder" class="tool-section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">JSON Path Finder</h3>
+                    <div class="panel-actions">
+                        <button class="btn" onclick="clearInput('pathfinderInput')">Clear</button>
+                    </div>
+                </div>
+                <textarea id="pathfinderInput" class="code-editor" placeholder="Paste your JSON here..." style="min-height: 300px;"></textarea>
+                <input type="text" id="searchQuery" class="search-input" placeholder="Search for key, value, or path (e.g., 'user', 'email', '$.store.book[0]')">
+                <button class="btn btn-primary" onclick="findPaths()">Find Paths</button>
+            </div>
+            
+            <div id="pathResults" class="path-results" style="display: none;">
+                <h3 style="margin-bottom: 15px; color: var(--accent);">Found Paths:</h3>
+                <div id="pathList"></div>
+            </div>
+        </section>
+
+        <!-- Minifier -->
+        <section id="minifier" class="tool-section">
+            <div class="input-output-container">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Input JSON</h3>
+                        <div class="panel-actions">
+                            <button class="btn" onclick="clearInput('minifierInput')">Clear</button>
+                            <button class="btn" onclick="pasteFromClipboard('minifierInput')">Paste</button>
+                        </div>
+                    </div>
+                    <textarea id="minifierInput" class="code-editor" placeholder="Paste your JSON here..."></textarea>
+                    <div id="minifierError" class="error-message"></div>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Minified JSON</h3>
+                        <div class="panel-actions">
+                            <button class="btn" onclick="copyToClipboard('minifierOutput')">Copy</button>
+                            <button class="btn" onclick="downloadJSON('minifierOutput', 'minified.json')">Download</button>
+                        </div>
+                    </div>
+                    <textarea id="minifierOutput" class="code-editor" readonly placeholder="Minified JSON will appear here..."></textarea>
+                    <div class="stats-panel" style="margin-top: 10px;">
+                        <div class="stat-item">
+                            <div class="stat-value" id="originalSize">0 B</div>
+                            <div class="stat-label">Original</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="minifiedSize">0 B</div>
+                            <div class="stat-label">Minified</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="savedPercent">0%</div>
+                            <div class="stat-label">Saved</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="minifyJSON()">Minify JSON</button>
+            </div>
+        </section>
+
+        <!-- Tree View -->
+        <section id="tree" class="tool-section">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3 class="panel-title">JSON Tree Viewer</h3>
+                    <div class="panel-actions">
+                        <button class="btn" onclick="clearInput('treeInput')">Clear</button>
+                        <button class="btn" onclick="expandAll()">Expand All</button>
+                        <button class="btn" onclick="collapseAll()">Collapse All</button>
+                    </div>
+                </div>
+                <textarea id="treeInput" class="code-editor" placeholder="Paste your JSON here..." style="min-height: 200px;"></textarea>
+                <button class="btn btn-primary" onclick="generateTree()" style="margin-top: 15px;">Generate Tree</button>
+            </div>
+            
+            <div class="panel" style="margin-top: 20px; display: none;" id="treeOutput">
+                <h3 class="panel-title">Tree View</h3>
+                <div id="treeContainer" class="tree-view"></div>
+            </div>
+        </section>
+
+        <!-- CSV Converter -->
+        <section id="converter" class="tool-section">
+            <div class="options-panel">
+                <h3 style="margin-bottom: 15px;">CSV Options</h3>
+                <div class="option-group">
+                    <label>Delimiter:</label>
+                    <select id="csvDelimiter">
+                        <option value=",">Comma (,)</option>
+                        <option value=";">Semicolon (;)</option>
+                        <option value="\t">Tab</option>
+                        <option value="|">Pipe (|)</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="includeHeaders" checked>
+                        <label for="includeHeaders">Include Headers</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-output-container">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">JSON Array</h3>
+                        <div class="panel-actions">
+                            <button class="btn" onclick="clearInput('converterInput')">Clear</button>
+                            <button class="btn" onclick="loadSampleJSON()">Load Sample</button>
+                        </div>
+                    </div>
+                    <textarea id="converterInput" class="code-editor" placeholder='Paste JSON array here (e.g., [{"name": "John", "age": 30}, {...}])'></textarea>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">CSV Output</h3>
+                        <div class="panel-actions">
+                            <button class="btn" onclick="copyToClipboard('converterOutput')">Copy</button>
+                            <button class="btn" onclick="downloadCSV()">Download CSV</button>
+                        </div>
+                    </div>
+                    <textarea id="converterOutput" class="code-editor" readonly placeholder="CSV output will appear here..."></textarea>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="convertToCSV()">Convert to CSV</button>
+            </div>
+        </section>
+
+        <!-- JSON Compare -->
+        <section id="compare" class="tool-section">
+            <div class="input-output-container">
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">JSON 1</h3>
+                        <div class="panel-actions">
+                            <button class="btn" onclick="clearInput('compareInput1')">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="compareInput1" class="code-editor" placeholder="Paste first JSON here..."></textarea>
+                </div>
+                
+                <div class="panel">
+                    <div class="panel-header">
+                        <h3 class="panel-title">JSON 2</h3>
+                        <div class="panel-actions">
+                            <button class="btn" onclick="clearInput('compareInput2')">Clear</button>
+                        </div>
+                    </div>
+                    <textarea id="compareInput2" class="code-editor" placeholder="Paste second JSON here..."></textarea>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="btn btn-primary" onclick="compareJSON()">Compare JSON</button>
+            </div>
+            
+            <div id="compareResults" class="panel" style="display: none;">
+                <h3 class="panel-title">Comparison Results</h3>
+                <div id="compareOutput"></div>
+            </div>
+        </section>
+
+        <!-- JSON Generator -->
+        <section id="generator" class="tool-section">
+            <div class="panel">
+                <h3 class="panel-title">JSON Schema Generator</h3>
+                <div class="options-panel">
+                    <div class="option-group">
+                        <label>Number of Items:</label>
+                        <input type="number" id="itemCount" value="5" min="1" max="100">
+                    </div>
+                    <div class="option-group">
+                        <label>Template:</label>
+                        <select id="generatorTemplate" onchange="updateGeneratorPreview()">
+                            <option value="users">Users</option>
+                            <option value="products">Products</option>
+                            <option value="posts">Blog Posts</option>
+                            <option value="custom">Custom Schema</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="customSchema" style="display: none; margin-top: 20px;">
+                    <textarea id="schemaInput" class="code-editor" style="min-height: 200px;" placeholder='Enter your schema template...'>{
+  "id": "{{index}}",
+  "name": "{{name}}",
+  "email": "{{email}}",
+  "age": "{{age}}",
+  "active": "{{boolean}}"
+}</textarea>
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <button class="btn btn-primary" onclick="generateJSON()">Generate JSON</button>
+                </div>
+                
+                <div class="panel" id="generatedOutput" style="margin-top: 20px; display: none;">
+                    <div class="panel-header">
+                        <h3 class="panel-title">Generated JSON</h3>
+                        <div class="panel-actions">
+                            <button class="btn" onclick="copyToClipboard('generatorOutput')">Copy</button>
+                            <button class="btn" onclick="downloadJSON('generatorOutput', 'generated.json')">Download</button>
+                        </div>
+                    </div>
+                    <textarea id="generatorOutput" class="code-editor" readonly></textarea>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Tool switching
+        function switchTool(toolName) {
+            // Hide all sections
+            document.querySelectorAll('.tool-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.tool-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(toolName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Utility functions
+        function showError(elementId, message) {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(elementId, message) {
+            const successEl = document.getElementById(elementId);
+            successEl.textContent = message;
+            successEl.style.display = 'block';
+            setTimeout(() => {
+                successEl.style.display = 'none';
+            }, 3000);
+        }
+
+        function clearInput(elementId) {
+            document.getElementById(elementId).value = '';
+        }
+
+        async function pasteFromClipboard(elementId) {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById(elementId).value = text;
+            } catch (err) {
+                showError('formatterError', 'Failed to read clipboard');
+            }
+        }
+
+        async function copyToClipboard(elementId) {
+            try {
+                const text = document.getElementById(elementId).value;
+                await navigator.clipboard.writeText(text);
+                showSuccess('formatterSuccess', 'Copied to clipboard!');
+            } catch (err) {
+                showError('formatterError', 'Failed to copy to clipboard');
+            }
+        }
+
+        function downloadJSON(elementId, filename) {
+            const content = document.getElementById(elementId).value;
+            const blob = new Blob([content], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadCSV() {
+            const content = document.getElementById('converterOutput').value;
+            const blob = new Blob([content], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'data.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // JSON Formatter
+        function formatJSON() {
+            const input = document.getElementById('formatterInput').value;
+            const indentSize = document.getElementById('indentSize').value;
+            const sortKeys = document.getElementById('sortKeys').checked;
+            
+            try {
+                let parsed = JSON.parse(input);
+                
+                if (sortKeys) {
+                    parsed = sortObject(parsed);
+                }
+                
+                const indent = indentSize === '\t' ? '\t' : ' '.repeat(parseInt(indentSize));
+                const formatted = JSON.stringify(parsed, null, indent);
+                
+                document.getElementById('formatterOutput').value = formatted;
+                showSuccess('formatterSuccess', 'JSON formatted successfully!');
+            } catch (e) {
+                showError('formatterError', 'Invalid JSON: ' + e.message);
+                document.getElementById('formatterOutput').value = '';
+            }
+        }
+
+        function sortObject(obj) {
+            if (Array.isArray(obj)) {
+                return obj.map(sortObject);
+            } else if (obj !== null && typeof obj === 'object') {
+                return Object.keys(obj).sort().reduce((result, key) => {
+                    result[key] = sortObject(obj[key]);
+                    return result;
+                }, {});
+            }
+            return obj;
+        }
+
+        // JSON Validator
+        function validateJSON() {
+            const input = document.getElementById('validatorInput').value;
+            const resultDiv = document.getElementById('validationResult');
+            const statsDiv = document.getElementById('validationStats');
+            
+            if (!input.trim()) {
+                resultDiv.innerHTML = '<div class="error-message" style="display: block;">Please enter JSON to validate</div>';
+                statsDiv.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const parsed = JSON.parse(input);
+                resultDiv.innerHTML = '<div class="success-message" style="display: block;">✓ Valid JSON!</div>';
+                
+                // Calculate stats
+                const stats = analyzeJSON(parsed);
+                document.getElementById('totalKeys').textContent = stats.keys;
+                document.getElementById('totalValues').textContent = stats.values;
+                document.getElementById('nestingLevel').textContent = stats.depth;
+                document.getElementById('dataSize').textContent = formatBytes(new TextEncoder().encode(input).length);
+                
+                statsDiv.style.display = 'grid';
+            } catch (e) {
+                resultDiv.innerHTML = `<div class="error-message" style="display: block;">✗ Invalid JSON: ${e.message}</div>`;
+                statsDiv.style.display = 'none';
+            }
+        }
+
+        function analyzeJSON(obj, depth = 0) {
+            let stats = { keys: 0, values: 0, depth: depth };
+            
+            if (Array.isArray(obj)) {
+                stats.values += obj.length;
+                obj.forEach(item => {
+                    const childStats = analyzeJSON(item, depth + 1);
+                    stats.keys += childStats.keys;
+                    stats.values += childStats.values;
+                    stats.depth = Math.max(stats.depth, childStats.depth);
+                });
+            } else if (obj !== null && typeof obj === 'object') {
+                const keys = Object.keys(obj);
+                stats.keys += keys.length;
+                keys.forEach(key => {
+                    const childStats = analyzeJSON(obj[key], depth + 1);
+                    stats.keys += childStats.keys;
+                    stats.values += childStats.values;
+                    stats.depth = Math.max(stats.depth, childStats.depth);
+                });
+            } else {
+                stats.values += 1;
+            }
+            
+            return stats;
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Path Finder
+        function findPaths() {
+            const input = document.getElementById('pathfinderInput').value;
+            const query = document.getElementById('searchQuery').value.toLowerCase();
+            
+            if (!input.trim() || !query.trim()) {
+                showError('pathfinderError', 'Please enter JSON and a search query');
+                return;
+            }
+            
+            try {
+                const parsed = JSON.parse(input);
+                const paths = [];
+                
+                function traverse(obj, currentPath = '$') {
+                    if (Array.isArray(obj)) {
+                        obj.forEach((item, index) => {
+                            const path = `${currentPath}[${index}]`;
+                            
+                            // Check if array index or value matches query
+                            if (path.toLowerCase().includes(query) || 
+                                JSON.stringify(item).toLowerCase().includes(query)) {
+                                paths.push({ path, value: item });
+                            }
+                            
+                            traverse(item, path);
+                        });
+                    } else if (obj !== null && typeof obj === 'object') {
+                        Object.keys(obj).forEach(key => {
+                            const path = `${currentPath}.${key}`;
+                            const value = obj[key];
+                            
+                            // Check if key or value matches query
+                            if (key.toLowerCase().includes(query) || 
+                                path.toLowerCase().includes(query) ||
+                                JSON.stringify(value).toLowerCase().includes(query)) {
+                                paths.push({ path, value });
+                            }
+                            
+                            traverse(value, path);
+                        });
+                    }
+                }
+                
+                traverse(parsed);
+                displayPaths(paths);
+                
+            } catch (e) {
+                showError('pathfinderError', 'Invalid JSON: ' + e.message);
+            }
+        }
+
+        function displayPaths(paths) {
+            const resultsDiv = document.getElementById('pathResults');
+            const pathList = document.getElementById('pathList');
+            
+            if (paths.length === 0) {
+                pathList.innerHTML = '<p style="color: var(--text-secondary);">No matching paths found</p>';
+            } else {
+                pathList.innerHTML = paths.map(({ path, value }) => {
+                    const valueStr = typeof value === 'string' ? `"${value}"` : JSON.stringify(value);
+                    return `
+                        <div class="path-item">
+                            <span>${path}</span>
+                            <button class="btn copy-btn" onclick="copyPath('${path}')">Copy Path</button>
+                        </div>
+                        <div style="margin-left: 20px; margin-bottom: 10px; color: var(--text-secondary); font-size: 0.9em;">
+                            Value: ${valueStr.length > 100 ? valueStr.substring(0, 100) + '...' : valueStr}
+                        </div>
+                    `;
+                }).join('');
+            }
+            
+            resultsDiv.style.display = 'block';
+        }
+
+        function copyPath(path) {
+            navigator.clipboard.writeText(path);
+            showSuccess('formatterSuccess', 'Path copied!');
+        }
+
+        // Minifier
+        function minifyJSON() {
+            const input = document.getElementById('minifierInput').value;
+            
+            try {
+                const parsed = JSON.parse(input);
+                const minified = JSON.stringify(parsed);
+                
+                document.getElementById('minifierOutput').value = minified;
+                
+                // Calculate sizes
+                const originalSize = new TextEncoder().encode(input).length;
+                const minifiedSize = new TextEncoder().encode(minified).length;
+                const savedPercent = Math.round((1 - minifiedSize / originalSize) * 100);
+                
+                document.getElementById('originalSize').textContent = formatBytes(originalSize);
+                document.getElementById('minifiedSize').textContent = formatBytes(minifiedSize);
+                document.getElementById('savedPercent').textContent = savedPercent + '%';
+                
+            } catch (e) {
+                showError('minifierError', 'Invalid JSON: ' + e.message);
+            }
+        }
+
+        // Tree View
+        function generateTree() {
+            const input = document.getElementById('treeInput').value;
+            
+            try {
+                const parsed = JSON.parse(input);
+                const treeHTML = createTreeHTML(parsed);
+                
+                document.getElementById('treeContainer').innerHTML = treeHTML;
+                document.getElementById('treeOutput').style.display = 'block';
+                
+                // Add collapse/expand functionality
+                document.querySelectorAll('.collapsible').forEach(el => {
+                    el.addEventListener('click', function() {
+                        this.classList.toggle('collapsed');
+                        const content = this.nextElementSibling;
+                        content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                    });
+                });
+                
+            } catch (e) {
+                showError('treeError', 'Invalid JSON: ' + e.message);
+            }
+        }
+
+        function createTreeHTML(obj, isLast = true) {
+            if (obj === null) return '<span class="tree-null">null</span>';
+            if (typeof obj === 'boolean') return `<span class="tree-boolean">${obj}</span>`;
+            if (typeof obj === 'number') return `<span class="tree-number">${obj}</span>`;
+            if (typeof obj === 'string') return `<span class="tree-string">"${obj}"</span>`;
+            
+            if (Array.isArray(obj)) {
+                if (obj.length === 0) return '[]';
+                
+                let html = '<span class="collapsible">[</span><div class="tree-node">';
+                obj.forEach((item, index) => {
+                    const isLastItem = index === obj.length - 1;
+                    html += createTreeHTML(item, isLastItem);
+                    if (!isLastItem) html += ',';
+                    if (index < obj.length - 1) html += '<br>';
+                });
+                html += '</div>]';
+                return html;
+            }
+            
+            if (typeof obj === 'object') {
+                const keys = Object.keys(obj);
+                if (keys.length === 0) return '{}';
+                
+                let html = '<span class="collapsible">{</span><div class="tree-node">';
+                keys.forEach((key, index) => {
+                    const isLastItem = index === keys.length - 1;
+                    html += `<span class="tree-key">"${key}"</span>: ${createTreeHTML(obj[key], isLastItem)}`;
+                    if (!isLastItem) html += ',';
+                    if (index < keys.length - 1) html += '<br>';
+                });
+                html += '</div>}';
+                return html;
+            }
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.collapsible').forEach(el => {
+                el.classList.remove('collapsed');
+                const content = el.nextElementSibling;
+                content.style.display = 'block';
+            });
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.collapsible').forEach(el => {
+                el.classList.add('collapsed');
+                const content = el.nextElementSibling;
+                content.style.display = 'none';
+            });
+        }
+
+        // CSV Converter
+        function convertToCSV() {
+            const input = document.getElementById('converterInput').value;
+            const delimiter = document.getElementById('csvDelimiter').value;
+            const includeHeaders = document.getElementById('includeHeaders').checked;
+            
+            try {
+                const parsed = JSON.parse(input);
+                
+                if (!Array.isArray(parsed)) {
+                    throw new Error('Input must be a JSON array');
+                }
+                
+                if (parsed.length === 0) {
+                    throw new Error('Array is empty');
+                }
+                
+                // Get all unique keys
+                const allKeys = new Set();
+                parsed.forEach(obj => {
+                    if (typeof obj === 'object' && obj !== null) {
+                        Object.keys(obj).forEach(key => allKeys.add(key));
+                    }
+                });
+                
+                const keys = Array.from(allKeys);
+                let csv = '';
+                
+                // Add headers
+                if (includeHeaders) {
+                    csv += keys.map(key => `"${key}"`).join(delimiter) + '\n';
+                }
+                
+                // Add rows
+                parsed.forEach(obj => {
+                    const row = keys.map(key => {
+                        const value = obj[key];
+                        if (value === undefined || value === null) return '';
+                        if (typeof value === 'string') return `"${value.replace(/"/g, '""')}"`;
+                        if (typeof value === 'object') return `"${JSON.stringify(value).replace(/"/g, '""')}"`;
+                        return value;
+                    });
+                    csv += row.join(delimiter) + '\n';
+                });
+                
+                document.getElementById('converterOutput').value = csv;
+                
+            } catch (e) {
+                showError('converterError', 'Error: ' + e.message);
+            }
+        }
+
+        function loadSampleJSON() {
+            const sample = [
+                {
+                    "id": 1,
+                    "name": "John Doe",
+                    "email": "john@example.com",
+                    "age": 30,
+                    "city": "New York"
+                },
+                {
+                    "id": 2,
+                    "name": "Jane Smith",
+                    "email": "jane@example.com",
+                    "age": 25,
+                    "city": "London"
+                },
+                {
+                    "id": 3,
+                    "name": "Bob Johnson",
+                    "email": "bob@example.com",
+                    "age": 35,
+                    "city": "Paris"
+                }
+            ];
+            
+            document.getElementById('converterInput').value = JSON.stringify(sample, null, 2);
+        }
+
+        // JSON Compare
+        function compareJSON() {
+            const input1 = document.getElementById('compareInput1').value;
+            const input2 = document.getElementById('compareInput2').value;
+            
+            try {
+                const obj1 = JSON.parse(input1);
+                const obj2 = JSON.parse(input2);
+                
+                const differences = findDifferences(obj1, obj2);
+                displayDifferences(differences);
+                
+            } catch (e) {
+                showError('compareError', 'Invalid JSON: ' + e.message);
+            }
+        }
+
+        function findDifferences(obj1, obj2, path = '') {
+            const differences = [];
+            
+            // Check obj1 keys
+            if (typeof obj1 === 'object' && obj1 !== null && !Array.isArray(obj1)) {
+                Object.keys(obj1).forEach(key => {
+                    const newPath = path ? `${path}.${key}` : key;
+                    
+                    if (!(key in obj2)) {
+                        differences.push({
+                            type: 'missing_in_second',
+                            path: newPath,
+                            value1: obj1[key],
+                            value2: undefined
+                        });
+                    } else if (JSON.stringify(obj1[key]) !== JSON.stringify(obj2[key])) {
+                        if (typeof obj1[key] === 'object' && typeof obj2[key] === 'object') {
+                            differences.push(...findDifferences(obj1[key], obj2[key], newPath));
+                        } else {
+                            differences.push({
+                                type: 'different_values',
+                                path: newPath,
+                                value1: obj1[key],
+                                value2: obj2[key]
+                            });
+                        }
+                    }
+                });
+            }
+            
+            // Check obj2 keys not in obj1
+            if (typeof obj2 === 'object' && obj2 !== null && !Array.isArray(obj2)) {
+                Object.keys(obj2).forEach(key => {
+                    const newPath = path ? `${path}.${key}` : key;
+                    
+                    if (!(key in obj1)) {
+                        differences.push({
+                            type: 'missing_in_first',
+                            path: newPath,
+                            value1: undefined,
+                            value2: obj2[key]
+                        });
+                    }
+                });
+            }
+            
+            // Handle arrays
+            if (Array.isArray(obj1) && Array.isArray(obj2)) {
+                const maxLength = Math.max(obj1.length, obj2.length);
+                for (let i = 0; i < maxLength; i++) {
+                    const newPath = `${path}[${i}]`;
+                    
+                    if (i >= obj1.length) {
+                        differences.push({
+                            type: 'missing_in_first',
+                            path: newPath,
+                            value1: undefined,
+                            value2: obj2[i]
+                        });
+                    } else if (i >= obj2.length) {
+                        differences.push({
+                            type: 'missing_in_second',
+                            path: newPath,
+                            value1: obj1[i],
+                            value2: undefined
+                        });
+                    } else if (JSON.stringify(obj1[i]) !== JSON.stringify(obj2[i])) {
+                        if (typeof obj1[i] === 'object' && typeof obj2[i] === 'object') {
+                            differences.push(...findDifferences(obj1[i], obj2[i], newPath));
+                        } else {
+                            differences.push({
+                                type: 'different_values',
+                                path: newPath,
+                                value1: obj1[i],
+                                value2: obj2[i]
+                            });
+                        }
+                    }
+                }
+            }
+            
+            return differences;
+        }
+
+        function displayDifferences(differences) {
+            const resultsDiv = document.getElementById('compareResults');
+            const outputDiv = document.getElementById('compareOutput');
+            
+            if (differences.length === 0) {
+                outputDiv.innerHTML = '<p style="color: var(--success);">✓ JSON objects are identical!</p>';
+            } else {
+                let html = `<p style="margin-bottom: 20px;">Found ${differences.length} difference(s):</p>`;
+                
+                differences.forEach(diff => {
+                    let symbol, color, message;
+                    
+                    switch (diff.type) {
+                        case 'missing_in_second':
+                            symbol = '−';
+                            color = 'var(--error)';
+                            message = `Missing in JSON 2`;
+                            break;
+                        case 'missing_in_first':
+                            symbol = '+';
+                            color = 'var(--success)';
+                            message = `Missing in JSON 1`;
+                            break;
+                        case 'different_values':
+                            symbol = '≠';
+                            color = 'var(--warning)';
+                            message = `Different values`;
+                            break;
+                    }
+                    
+                    html += `
+                        <div style="margin: 10px 0; padding: 10px; background: var(--bg-tertiary); border-radius: 4px;">
+                            <div style="color: ${color}; font-weight: bold;">
+                                ${symbol} ${diff.path}
+                            </div>
+                            <div style="margin-top: 5px; font-size: 0.9em;">
+                                ${message}
+                                ${diff.type === 'different_values' ? `
+                                    <div style="margin-top: 5px;">
+                                        JSON 1: <code>${JSON.stringify(diff.value1)}</code><br>
+                                        JSON 2: <code>${JSON.stringify(diff.value2)}</code>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                outputDiv.innerHTML = html;
+            }
+            
+            resultsDiv.style.display = 'block';
+        }
+
+        // JSON Generator
+        const generatorTemplates = {
+            users: {
+                id: '{{index}}',
+                name: '{{name}}',
+                email: '{{email}}',
+                age: '{{age}}',
+                city: '{{city}}',
+                isActive: '{{boolean}}'
+            },
+            products: {
+                id: '{{uuid}}',
+                name: '{{product}}',
+                price: '{{price}}',
+                category: '{{category}}',
+                inStock: '{{boolean}}',
+                rating: '{{rating}}'
+            },
+            posts: {
+                id: '{{index}}',
+                title: '{{title}}',
+                content: '{{paragraph}}',
+                author: '{{name}}',
+                publishedAt: '{{date}}',
+                tags: ['{{tag}}', '{{tag}}', '{{tag}}']
+            }
+        };
+
+        function updateGeneratorPreview() {
+            const template = document.getElementById('generatorTemplate').value;
+            const customSchema = document.getElementById('customSchema');
+            
+            if (template === 'custom') {
+                customSchema.style.display = 'block';
+            } else {
+                customSchema.style.display = 'none';
+                document.getElementById('schemaInput').value = JSON.stringify(generatorTemplates[template], null, 2);
+            }
+        }
+
+        function generateJSON() {
+            const template = document.getElementById('generatorTemplate').value;
+            const count = parseInt(document.getElementById('itemCount').value);
+            let schema;
+            
+            if (template === 'custom') {
+                try {
+                    schema = JSON.parse(document.getElementById('schemaInput').value);
+                } catch (e) {
+                    showError('generatorError', 'Invalid schema template');
+                    return;
+                }
+            } else {
+                schema = generatorTemplates[template];
+            }
+            
+            const items = [];
+            for (let i = 0; i < count; i++) {
+                items.push(generateItem(schema, i));
+            }
+            
+            document.getElementById('generatorOutput').value = JSON.stringify(items, null, 2);
+            document.getElementById('generatedOutput').style.display = 'block';
+        }
+
+        function generateItem(schema, index) {
+            const names = ['John Doe', 'Jane Smith', 'Bob Johnson', 'Alice Williams', 'Charlie Brown'];
+            const cities = ['New York', 'London', 'Paris', 'Tokyo', 'Sydney'];
+            const products = ['Laptop', 'Smartphone', 'Headphones', 'Tablet', 'Smartwatch'];
+            const categories = ['Electronics', 'Clothing', 'Food', 'Books', 'Sports'];
+            const tags = ['technology', 'lifestyle', 'business', 'health', 'education'];
+            const titles = ['Getting Started with JSON', 'Advanced JavaScript Tips', 'Web Development Best Practices', 'Modern API Design', 'Data Structures Explained'];
+            
+            const replacements = {
+                '{{index}}': index + 1,
+                '{{uuid}}': generateUUID(),
+                '{{name}}': names[Math.floor(Math.random() * names.length)],
+                '{{email}}': `user${index + 1}@example.com`,
+                '{{age}}': Math.floor(Math.random() * 50) + 20,
+                '{{city}}': cities[Math.floor(Math.random() * cities.length)],
+                '{{boolean}}': Math.random() > 0.5,
+                '{{product}}': products[Math.floor(Math.random() * products.length)],
+                '{{price}}': (Math.random() * 1000).toFixed(2),
+                '{{category}}': categories[Math.floor(Math.random() * categories.length)],
+                '{{rating}}': (Math.random() * 4 + 1).toFixed(1),
+                '{{title}}': titles[Math.floor(Math.random() * titles.length)],
+                '{{paragraph}}': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                '{{date}}': new Date(Date.now() - Math.floor(Math.random() * 10000000000)).toISOString(),
+                '{{tag}}': tags[Math.floor(Math.random() * tags.length)]
+            };
+            
+            function replaceTokens(obj) {
+                if (typeof obj === 'string') {
+                    return replacements[obj] || obj;
+                } else if (Array.isArray(obj)) {
+                    return obj.map(replaceTokens);
+                } else if (typeof obj === 'object' && obj !== null) {
+                    const result = {};
+                    for (const key in obj) {
+                        result[key] = replaceTokens(obj[key]);
+                    }
+                    return result;
+                }
+                return obj;
+            }
+            
+            return replaceTokens(schema);
+        }
+
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // Auto-format on paste
+        document.getElementById('formatterInput').addEventListener('paste', (e) => {
+            setTimeout(() => {
+                formatJSON();
+            }, 10);
+        });
+
+        // Initialize
+        updateGeneratorPreview();
+    </script>
+</body>
+</html>
