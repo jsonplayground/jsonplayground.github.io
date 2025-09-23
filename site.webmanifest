@@ -1,0 +1,96 @@
+{
+    "name": "JSON Playground - Free Online JSON Tools",
+    "short_name": "JSON Playground",
+    "description": "Free online JSON playground with 8+ powerful tools. Format, validate, minify, convert JSON to CSV, find paths, compare files, generate test data. No registration required.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0a0a0a",
+    "theme_color": "#00ff88",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "en",
+    "categories": ["developer", "productivity", "utilities"],
+    "icons": [
+        {
+            "src": "/favicon-16x16.png",
+            "sizes": "16x16",
+            "type": "image/png"
+        },
+        {
+            "src": "/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        },
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/screenshot-desktop.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "JSON Playground Desktop View"
+        },
+        {
+            "src": "/screenshot-mobile.png",
+            "sizes": "390x844",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "JSON Playground Mobile View"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "JSON Formatter",
+            "short_name": "Formatter",
+            "description": "Format and beautify JSON data",
+            "url": "/#formatter",
+            "icons": [
+                {
+                    "src": "/favicon-32x32.png",
+                    "sizes": "32x32"
+                }
+            ]
+        },
+        {
+            "name": "JSON Validator",
+            "short_name": "Validator",
+            "description": "Validate JSON syntax and structure",
+            "url": "/#validator",
+            "icons": [
+                {
+                    "src": "/favicon-32x32.png",
+                    "sizes": "32x32"
+                }
+            ]
+        },
+        {
+            "name": "JSON Minifier",
+            "short_name": "Minifier",
+            "description": "Minify and compress JSON data",
+            "url": "/#minifier",
+            "icons": [
+                {
+                    "src": "/favicon-32x32.png",
+                    "sizes": "32x32"
+                }
+            ]
+        }
+    ]
+}
