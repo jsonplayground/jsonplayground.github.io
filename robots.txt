@@ -1,13 +1,62 @@
+# Robots.txt for JSON Playground
+# https://jsonplayground.github.io/
+
+# Allow all crawlers
 User-agent: *
 Allow: /
+Disallow: /cdn-cgi/
 
-# Sitemap
+# Google
+User-agent: Googlebot
+Allow: /
+# Crawl-delay: 0
+
+# Bing
+User-agent: Bingbot
+Allow: /
+# Crawl-delay: 0
+
+# Additional search engines
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DotBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+# Sitemap location
 Sitemap: https://jsonplayground.github.io/sitemap.xml
 
-# Disallow admin or private areas (if any)
-# Disallow: /admin/
-# Disallow: /private/
-
-# Note: Crawl-delay is not supported by Googlebot
-# For rate limiting, use Google Search Console settings instead
-
+# Cache control hint for crawlers
+# Tells crawlers this site is frequently updated
+# Visit-time: 0100-0500
