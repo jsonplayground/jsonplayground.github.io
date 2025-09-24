@@ -4,35 +4,10 @@ Allow: /
 # Sitemap
 Sitemap: https://jsonplayground.github.io/sitemap.xml
 
-# Crawl-delay for respectful crawling
-Crawl-delay: 1
+# Disallow admin or private areas (if any)
+# Disallow: /admin/
+# Disallow: /private/
 
-# Allow all search engines to index all content
-Disallow:
+# Note: Crawl-delay is not supported by Googlebot
+# For rate limiting, use Google Search Console settings instead
 
-# Specific directives for major search engines
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Slurp
-Allow: /
-
-User-agent: DuckDuckBot
-Allow: /
-
-User-agent: Baiduspider
-Allow: /
-
-User-agent: YandexBot
-Allow: /
-
-# Block access to any potential admin or sensitive areas (if they exist in future)
-Disallow: /admin/
-Disallow: /private/
-Disallow: /.git/
-Disallow: /node_modules/
-Disallow: /.env
-Disallow: /config/
