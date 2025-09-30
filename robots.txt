@@ -1,5 +1,5 @@
 # Robots.txt for JSON Playground
-# https://jsonplayground.github.io/
+# http://www.jsonplayground.online/
 
 # Allow all crawlers
 User-agent: *
@@ -55,7 +55,7 @@ User-agent: MJ12bot
 Disallow: /
 
 # Sitemap location
-Sitemap: https://jsonplayground.github.io/sitemap.xml
+Sitemap: http://www.jsonplayground.online/sitemap.xml
 
 # Cache control hint for crawlers
 # Tells crawlers this site is frequently updated

@@ -1,6 +1,6 @@
 # JSON Playground - Free Online JSON Tools
 
-[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](https://jsonplayground.github.io/)
+[![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-Live-brightgreen)](http://www.jsonplayground.online/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
@@ -96,7 +96,7 @@
 
 ## 🚀 Getting Started
 
-1. **Visit**: Go to [https://jsonplayground.github.io/](https://jsonplayground.github.io/)
+1. **Visit**: Go to [http://www.jsonplayground.online/](http://www.jsonplayground.online/)
 2. **Choose Tool**: Select from 8 available JSON utilities
 3. **Input Data**: Paste your JSON data or use sample data
 4. **Process**: Click the appropriate action button
@@ -189,7 +189,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🔗 Links
 
-- **Live Site**: [https://jsonplayground.github.io/](https://jsonplayground.github.io/)
+- **Live Site**: [http://www.jsonplayground.online/](http://www.jsonplayground.online/)
 - **GitHub Repository**: [https://github.com/jsonplayground/jsonplayground.github.io](https://github.com/jsonplayground/jsonplayground.github.io)
 - **Issues**: [Report a bug or request a feature](https://github.com/jsonplayground/jsonplayground.github.io/issues)
 

@@ -1,11 +1,11 @@
 # Enhanced Full SEO Overhaul Prompt for HTML Sites (2025)
 
-**Goal:** Transform https://jsonplayground.github.io into a dominant SEO performer using cutting-edge 2025 techniques to achieve **first-page rankings** and **featured snippet positions** for target keywords. Deliver production-ready code, comprehensive strategy, and measurable results framework.
+**Goal:** Transform http://www.jsonplayground.online into a dominant SEO performer using cutting-edge 2025 techniques to achieve **first-page rankings** and **featured snippet positions** for target keywords. Deliver production-ready code, comprehensive strategy, and measurable results framework.
 
 ## 🎯 Project Context
 
 **Site Information:**
-* URL: [{site_url}](https://jsonplayground.github.io/)
+* URL: [{site_url}](http://www.jsonplayground.online/)
 * Industry/Niche: {detailed industry description}
 * Business Model: {B2B/B2C/Local/eCommerce/Service}
 * Tech Stack: HTML/CSS {+ JavaScript framework/libraries}
